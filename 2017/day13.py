@@ -16,6 +16,15 @@ class Scanner(object):
         if self.position == 1:
             self.reverse = False
 
+    def get_position_at(self, t, scanner_range):
+        # https://en.wikipedia.org/wiki/Chinese_remainder_theorem
+        # thanks Vincent
+        offset = t % ((scanner_range - 1) * 2)
+        if offset > scanner_range - 1:
+            return 2 * (scanner_range - 1) - offset
+        else:
+            return offset
+
     def __repr__(self):
         return 'Scanner <{}, {}, position: {}>'.format(self.depth,
                                                        self.range,
@@ -25,6 +34,15 @@ class Scanner(object):
 def move_scanners(scanners):
     for scanner in scanners.values():
         scanner.step()
+
+
+def load_scanners():
+    scanners = {}
+    with open('day13.txt', 'r') as f:
+        for scanner in f:
+            depth, scanner_range = scanner.split(': ')
+            scanners[int(depth)] = Scanner(int(depth), int(scanner_range))
+    return scanners
 
 
 def solve1(scanners):
@@ -41,28 +59,29 @@ def solve1(scanners):
     return sum(severities)
 
 
-def solve2(scanners):
-    counter = 0
-    while True:
-        if solve1(scanners) == 0:
-            break
-        move_scanners(scanners)
-        counter += 1
-        if counter % 100 == 0:
-            print 'Tried {} steps'.format(counter)
-    return counter
-
-
-if __name__ == '__main__':
+def solve2(debug=False):
     scanners = {}
-    scanners2 = {}
+    # just pretend that this is not here
+    s = Scanner(1, 1)
     with open('day13.txt', 'r') as f:
         for scanner in f:
             depth, scanner_range = scanner.split(': ')
-            scanners[int(depth)] = Scanner(int(depth), int(scanner_range))
-            scanners2[int(depth)] = Scanner(int(depth), int(scanner_range))
+            scanners[int(depth)] = int(scanner_range)
 
-    print 'Part 1:', solve1(scanners)
-    print 'Part 2:', solve2(scanners2)
+    t = 0
+    while True:
+        if not any([s.get_position_at(t + depth, scanner_range) == 0 for depth, scanner_range in scanners.iteritems()]):
+            print 'Part 2: Start at t = {}'.format(t)
+            break
+        t += 1
+        if t % 1000 == 0 and debug == True:
+            print 'Waited {}'.format(t)
+
+
+
+
+if __name__ == '__main__':
+    print 'Part 1:', solve1(load_scanners())
+    solve2()
 
 
