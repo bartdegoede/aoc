@@ -25,7 +25,7 @@ def solve1(inp):
     print lst[0] * lst[1]
 
 
-def solve2(inp):
+def knothash(inp):
     lengths = [ord(c) for c in inp]
     lengths += [17, 31, 73, 47, 23]
 
@@ -42,13 +42,11 @@ def solve2(inp):
     for start, end in zip(range(0, len(lst), 16), range(16, len(lst)+16, 16)):
         dense_hash.append(reduce(xor, lst[start:end]))
 
-    print ''.join([format(h, 'x').zfill(2) for h in dense_hash])
+    return ''.join([format(h, 'x').zfill(2) for h in dense_hash])
 
 
 if __name__ == '__main__':
     lengths = '102,255,99,252,200,24,219,57,103,2,226,254,1,0,69,216'
     # solve1(lengths)
-    solve2(lengths)
-
-    # part2
+    print knothash(lengths)
 
