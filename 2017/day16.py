@@ -19,23 +19,27 @@ def partner(programs, a, b):
     return exchange(programs, position_a, position_b)
 
 
-def dance(programs):
-    with open('day16.txt', 'r') as f:
-        instructions = f.read().split(',')
-
-    for instruction in instructions:
-        if instruction.startswith('s'):
-            programs = spin(programs, int(instruction[1:]))
-        elif instruction.startswith('x'):
-            a, b = instruction[1:].split('/')
-            programs = exchange(programs, int(a), int(b))
-        elif instruction.startswith('p'):
-            a, b = instruction[1:].split('/')
-            programs = partner(programs, a, b)
+def dance(programs, instructions, repetitions=1):
+    seen = []
+    for i in xrange(repetitions):
+        if programs in seen:
+            return seen[repetitions % i]
+        seen.append(programs)
+        for instruction in instructions:
+            if instruction.startswith('s'):
+                programs = spin(programs, int(instruction[1:]))
+            elif instruction.startswith('x'):
+                a, b = instruction[1:].split('/')
+                programs = exchange(programs, int(a), int(b))
+            elif instruction.startswith('p'):
+                a, b = instruction[1:].split('/')
+                programs = partner(programs, a, b)
 
     return programs
 
 
 if __name__ == '__main__':
-    programs = 'abcdefghijklmnop'
-    print 'Part 1:', programs
+    with open('day16.txt', 'r') as f:
+        instructions = f.read().split(',')
+    print 'Part 1:', dance('abcdefghijklmnop', instructions)
+    print 'Part 2:', dance('abcdefghijklmnop', instructions, repetitions=1000000000)
