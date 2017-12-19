@@ -14,9 +14,11 @@ class Packet(object):
 
         self.letters = []
         self.done = False
+        self.counter = 0
 
     def step(self):
         self.steps[self.direction]()
+        self.counter += 1
         val = self.diagram[self.y][self.x]
         if val == ' ':
             self.done = True
@@ -61,3 +63,4 @@ if __name__ == '__main__':
     while packet.done == False:
         packet.step()
     print 'Part 1:', ''.join(packet.letters)
+    print 'Part 2:', packet.counter
