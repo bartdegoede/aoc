@@ -59,7 +59,6 @@ if __name__ == '__main__':
         diagram = f.read().split('\n')[:-1]
 
     packet = Packet(diagram)
-    counter = 0
     while packet.done == False:
         packet.step()
     print 'Part 1:', ''.join(packet.letters)
